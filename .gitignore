@@ -1,6 +1,4 @@
 #phpStorm
-
 .idea
-
 #hide login data for server from others
-.loginData
+loginData
