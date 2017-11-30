@@ -18,7 +18,27 @@ class FilterContacts
      */
     public static function filterOutInvalid($contactArray)
     {
-        $ret = array_filter($contactArray, function ($contact) {
+        //remove all whitespaces from variables
+        $ret = array_map(function ($contact) {
+            foreach ($contact as $key => $value) {
+                //weird stuff in database. cleanup DB when have time
+                $contact[$key] = str_replace(' ', '', $contact[$key]);
+                $contact[$key] = str_replace('  ', '', $contact[$key]);
+                $contact[$key] = preg_replace('/\s+/', '', $contact[$key]);
+
+                if ($key === 'brMobil') {
+                    $contact[$key] = preg_replace("[^0-9]", "", $contact[$key]);
+                }
+
+                if ($key === 'nadimak') {
+                    $contact[$key] = str_replace('N/A', '', $contact[$key]);
+                    $contact[$key] = str_replace('/', '', $contact[$key]);
+                }
+            }
+            return $contact;
+        }, $contactArray);
+
+        $ret = array_filter($ret, function ($contact) {
             return self::filterVariable($contact['ime'], NAME) &&
                 self::filterVariable($contact['prezime'], SURNAME) &&
                 self::filterVariable($contact['nadimak'], NICKNAME) &&
@@ -45,7 +65,6 @@ class FilterContacts
                 return true;
                 break;
             case MOBILENUMBER:
-                $var = preg_replace("[^0-9]", "", $var); //replace any weird non-number characters
                 if (strlen($var) > 9) { //more than 9 digits is valid mobile number
                     return true;
                 } else {
