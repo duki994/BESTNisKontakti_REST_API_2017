@@ -65,7 +65,7 @@ class FilterContacts
                 return true;
                 break;
             case MOBILENUMBER:
-                if (strlen($var) > 9) { //more than 9 digits is valid mobile number
+                if (strlen($var) >= 9) { //more than 9 digits is valid mobile number
                     return true;
                 } else {
                     return false;
