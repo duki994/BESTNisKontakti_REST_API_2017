@@ -1,6 +1,6 @@
 <?php
 
-include_once 'MyErrorHandler.php';
+require_once(__DIR__ . '/MyErrorHandler.php');
 
 set_error_handler('MyErrorHandler::errorLogger');
 
@@ -10,6 +10,13 @@ define('NICKNAME', 3);
 define('EMAIL', 4);
 define('MOBILENUMBER', 5);
 
+/**
+ *
+ * Class FilterContacts
+ * * Filters out invalid contacts or those with invalid fields
+ *
+ * @author - Dusan K. <duki994@gmail.com>
+ */
 class FilterContacts
 {
     /**

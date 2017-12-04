@@ -1,19 +1,28 @@
 <?php
-include_once 'utilities/MyErrorHandler.php';
-include_once 'utilities/database/MyDBClass.php';
-include_once 'utilities/FilterContacts.php';
-include_once 'models/User.php';
+require_once(__DIR__ . '/../MyErrorHandler.php');
+require_once(__DIR__ . '/MyDBClass.php');
+require_once(__DIR__ . '/../FilterContacts.php');
+require_once(__DIR__ . '/../../models/User.php');
 
 define('BINDINGS_EMAIL', ':email');
 define('BINDINGS_PASSWORD', ':pass');
-
-define('BINDINGS_REQUIRED', true);
-define('BINDINGS_NOT_REQUIRED', false);
+/**
+ * Base directory of portal with trailing slash
+ */
+define('PORTAL_BASE_DIR', 'http://jobfairnis.rs/portal/');
 /**
  * Set my custom error handler for this script
  */
 set_error_handler('MyErrorHandler::errorLogger');
 
+/**
+ *
+ * Class Queries
+ *  * Executes and returns queries from database
+ *
+ * @author - Dusan K. <duki994@gmail.com>
+ * @uses MyDBClass
+ */
 class Queries
 {
 
@@ -26,7 +35,7 @@ class Queries
      * @var string - select all member from Portal (read Contacts as I read only data that is logically
      *               connected to creating contacts ;))
      */
-    private static $selectAllContacts = "SELECT ime, prezime, nadimak, eMail, brMobil, id FROM hr_clan";
+    private static $selectAllContacts = "SELECT ime, prezime, nadimak, eMail, brMobil, id, slika FROM hr_clan WHERE status != 'neaktivan'";
 
     /**
      * @var MyDBClass - instance of MyDBClass used for database operation
@@ -47,9 +56,7 @@ class Queries
         self::$db->execute();
         $result = self::$db->resultAssoc(); /* stavice array u array (bice $user[0])* jer ocekuje vise rezultata */
         if ($result[0]) {
-            $user = new User();
-            $user->setUsername($result[0]['eMail']);
-            $user->setPassword($result[0]['lozinka']);
+            $user = new User($result[0]['eMail'], $result[0]['lozinka']);
             return $user;
         }
         return false;
@@ -65,8 +72,9 @@ class Queries
         self::$db->execute();
         $filteredContacts = FilterContacts::filterOutInvalid(self::$db->resultAssoc());
         $contactModelArray = array();
+        /* Works much faster when passed as reference */
         foreach ($filteredContacts as &$contact) {
-            $contactModelArray[] = new Contact($contact['id'], $contact['ime'], $contact['prezime'], $contact['nadimak'], $contact['eMail'], $contact['brMobil']);
+            $contactModelArray[] = new Contact($contact['id'], $contact['ime'], $contact['prezime'], $contact['nadimak'], $contact['eMail'], $contact['brMobil'], PORTAL_BASE_DIR . $contact['slika']);
         }
         return $contactModelArray;
     }

@@ -5,6 +5,12 @@
  */
 set_error_handler('MyErrorHandler::errorLogger');
 
+/**
+ * Class MyErrorHandler
+ *  * Handles and logs errors and warnings in error log folder.
+ *
+ * @author - Dusan K. <duki994@gmail.com>
+ */
 class MyErrorHandler
 {
 

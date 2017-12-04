@@ -1,6 +1,6 @@
 <?php
-include_once 'utilities/MyErrorHandler.php';
-include_once 'loginData/loginCredentials.php';
+require_once(__DIR__ . '/../MyErrorHandler.php');
+require_once(__DIR__ . '/../../loginData/loginCredentials.php');
 
 /*------------ FILE NAME -------------------- */
 define('fileName', basename(__FILE__));
@@ -17,6 +17,8 @@ set_error_handler('MyErrorHandler::errorLogger');
 
 /**
  * Class MyDBClass - DB access abstraction class
+ *
+ * @author - Dusan K. <duki994@gmail.com>
  */
 class MyDBClass
 {
@@ -51,10 +53,8 @@ class MyDBClass
     }
 
     /**
-     * @param $query - SQL query string
-     *
      * Makes prepared statement for querying SQL database
-     *
+     * @param string $query - SQL query string
      */
     public function prepareQuery($query)
     {
@@ -180,7 +180,7 @@ class MyDBClass
     /* -------------------------------- TRANSACTION METHODS -- END ---------------------------------- */
 
     /**
-     * @return mixed - no return here. read PDO documentation for more.
+     * @return bool - no return here. read PDO documentation for more.
      * @link http://php.net/manual/en/pdostatement.debugdumpparams.php
      */
     public function debugDumpParams()

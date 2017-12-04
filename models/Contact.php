@@ -1,6 +1,5 @@
 <?php
-
-include_once 'utilities/MyErrorHandler.php';
+require_once(__DIR__ . '/../utilities/MyErrorHandler.php');
 
 /**
  * Set my custom error handler for this script
@@ -9,45 +8,58 @@ set_error_handler('MyErrorHandler::errorLogger');
 
 /**
  * Class Contact
+ * * Contact model object
  *
- * Contact model object
- *
+ * @author - Dusan K. <duki994@gmail.com>
+ * @uses JsonSerializable interface to serialize object vars (json_encode can't serialize private members)
  */
-class Contact
+class Contact implements JsonSerializable
 {
     /**
      * @var int - id from SQL database
      */
-    public $id;
+    private $id;
     /**
      * @var string - name
      */
-    public $name;
+    private $name;
     /**
      * @var string - surname
      */
-    public $surname;
+    private $surname;
     /**
      * @var string - nickname
      */
-    public $nickname;
+    private $nickname;
     /**
      * @var string - email
      */
-    public $email;
+    private $email;
     /**
      * @var string - mobile phone number
      */
-    public $mobileNumber;
+    private $mobileNumber;
+
+    /**
+     * @var string - Path to profile/avatar image of contact
+     * Use with Android lazy load library (like Picasso)
+     * Base 64 enoding adds too much data (~25MB JSOn for 300 contacts).
+     * And constant server polling for JSON is also too much
+     */
+    private $imgPath;
+
 
     /**
      * Contact constructor.
-     * @param string $name
-     * @param string $surname
-     * @param string $email
-     * @param string $mobileNumber
+     * @param $id - Contact id from database
+     * @param $name - Contact name from database
+     * @param $surname - Contact surname from database
+     * @param $nickname - Contact nickname from database
+     * @param $email - Contact email from database
+     * @param $mobileNumber - Contact mobile number from database
+     * @param $imgPath - - Contact base64 encoded profile image
      */
-    public function __construct($id, $name, $surname, $nickname, $email, $mobileNumber)
+    public function __construct($id, $name, $surname, $nickname, $email, $mobileNumber, $imgPath = '')
     {
         $this->setName($name);
         $this->setSurname($surname);
@@ -55,9 +67,27 @@ class Contact
         $this->setEmail($email);
         $this->setMobileNumber($mobileNumber);
         $this->setId($id);
+        $this->setImgPath($imgPath);
     }
 
     /* -------------- Getters and Setters ---------- */
+
+    /**
+     * @return string
+     */
+    public function getImgPath()
+    {
+        return (string)$this->imgPath;
+    }
+
+    /**
+     * @param string $imgPath
+     */
+    public function setImgPath($imgPath)
+    {
+        $this->imgPath = (string)$imgPath;
+    }
+
     /**
      * @return int
      */
@@ -154,4 +184,15 @@ class Contact
         $this->mobileNumber = (string)$mobileNumber;
     }
     /* ---------------------------------------------- */
+
+    /**
+     * JsonSerializable interface function override
+     * Get non statical object properties (private, protected and public)
+     * as associative array
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        return (array)get_object_vars($this);
+    }
 }

@@ -1,8 +1,13 @@
 <?php
+/**
+ * API version 1.1
+ * @uses MyDBClass, Queries
+ * @author - Dusan K. <duki994@gmail.com
+ **/
 header("Content-Type: application/json");
-include_once 'utilities/database/Queries.php';
-include_once 'utilities/MyErrorHandler.php';
-include_once 'models/Contact.php';
+require_once(__DIR__ . '/utilities/database/Queries.php');
+require_once(__DIR__ . '/utilities/MyErrorHandler.php');
+require_once(__DIR__ . '/models/Contact.php');
 /**
  * Set my custom error handler for this script
  */
@@ -29,9 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
         $ret[] = array(
             'msg' => 'User not found',
-            'username' => $user,
-            'password' => $password,
-            'input' => file_get_contents("php://input"),
         );
         //return JSON Array
         echo json_encode($ret);
@@ -42,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'login' => false,
     );
     $ret[] = array(
-        'msg' => 'User not found',
+        'msg' => 'Bad request method. Must be POST',
         'requestMethod' => print_r($_SERVER['REQUEST_METHOD'], true),
     );
     echo json_encode($ret);

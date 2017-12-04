@@ -1,26 +1,36 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: duki9
- * Date: 13/11/2017
- * Time: 03:31
- */
 
+/**
+ * Class User
+ * * User model
+ *
+ * @author - Dusan K. <duki994@gmail.com>
+ */
 class User
 {
+    /**
+     * @var string $username - username
+     */
     private $username;
+    /**
+     * @var string $password - password
+     */
     private $password;
 
     /**
      * User constructor.
+     * @param string $username - username passed to constructor
+     * @param string $password - password passed to constructor
      */
-    public function __construct()
+    public function __construct($username, $password)
     {
+        $this->setUsername($username);
+        $this->setPassword($password);
     }
 
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUsername()
     {
@@ -28,7 +38,7 @@ class User
     }
 
     /**
-     * @param mixed $username
+     * @param string $username
      */
     public function setUsername($username)
     {
@@ -36,7 +46,7 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPassword()
     {
@@ -44,7 +54,7 @@ class User
     }
 
     /**
-     * @param mixed $password
+     * @param string $password
      */
     public function setPassword($password)
     {
